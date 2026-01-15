@@ -106,7 +106,7 @@ export interface Message {
 export type Intent =
   | { type: 'create_iva' }
   | { type: 'edit_iva'; ivaId: string }
-  | { type: 'preview_iva'; ivaId: string }
+  | { type: 'preview_iva'; ivaId?: string }
   | { type: 'show_archive' }
   | { type: 'show_favorites' }
   | { type: 'select_layout'; slideIndex: number; layoutId: string }

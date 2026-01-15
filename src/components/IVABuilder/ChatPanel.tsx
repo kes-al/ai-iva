@@ -13,6 +13,8 @@ interface ChatPanelProps {
   error: string | null;
   conversationPhase: ConversationPhase;
   currentSlideIndex: number;
+  currentSlideNeedsTemplate: boolean;
+  totalSlides: number;
   onSendMessage: (message: string) => void;
   onLayoutSelect: (slideIndex: number, layoutId: string) => void;
   onBack: () => void;
@@ -24,6 +26,8 @@ export function ChatPanel({
   error,
   conversationPhase,
   currentSlideIndex,
+  currentSlideNeedsTemplate,
+  totalSlides,
   onSendMessage,
   onLayoutSelect,
   onBack,
@@ -35,7 +39,8 @@ export function ChatPanel({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const showLayoutSelector = conversationPhase === 'layout_selection';
+  // Show layout selector when in layout_selection phase AND current slide needs a template
+  const showLayoutSelector = conversationPhase === 'layout_selection' && currentSlideNeedsTemplate;
 
   return (
     <div className="h-full flex flex-col">

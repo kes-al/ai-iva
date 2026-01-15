@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useIVABuilder } from '@/hooks/useIVABuilder';
 import { useChat } from '@/hooks/useChat';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
@@ -9,6 +9,7 @@ import { ExpandedView } from './ExpandedView';
 import { IVA, Intent, ChatResponse } from '@/lib/types';
 import { saveIVA } from '@/lib/storage';
 import { createEmptySlideData } from '@/lib/templates';
+import { exportIVA, downloadBlob } from '@/lib/export';
 
 export function IVABuilder() {
   const builder = useIVABuilder();
@@ -48,10 +49,12 @@ export function IVABuilder() {
 
       case 'set_slide_count':
         builder.updateIVAMetadata({ slideCount: intent.count });
-        // Initialize empty slides
+        // Initialize placeholder slides (no template yet - user will choose per slide)
         for (let i = 0; i < intent.count; i++) {
-          builder.addSlide(createEmptySlideData('content-image-split'));
+          builder.addSlide({ templateId: '', slots: {} });
         }
+        // Start at first slide for layout selection
+        builder.setCurrentSlideIndex(0);
         break;
 
       case 'set_iva_name':
@@ -101,9 +104,14 @@ export function IVABuilder() {
         break;
 
       case 'preview_iva':
-        const previewIva = storage.getById(intent.ivaId);
-        if (previewIva) {
-          builder.loadIVAForPreview(previewIva);
+        if (intent.ivaId) {
+          const previewIva = storage.getById(intent.ivaId);
+          if (previewIva) {
+            builder.loadIVAForPreview(previewIva);
+          }
+        } else if (builder.state.currentIVA?.slides?.length) {
+          // Preview the current IVA being built
+          builder.loadIVAForPreview(builder.state.currentIVA as IVA);
         }
         break;
 
@@ -122,7 +130,7 @@ export function IVABuilder() {
         break;
 
       case 'export_iva':
-        // Export is handled separately
+        handleExport();
         break;
 
       case 'go_back':
@@ -178,7 +186,28 @@ export function IVABuilder() {
   const handleLayoutSelect = (slideIndex: number, layoutId: string) => {
     const layoutSlide = createEmptySlideData(layoutId);
     builder.setSlide(slideIndex, layoutSlide);
-    builder.setConversationPhase('content_population');
+
+    // Check if there are more slides that need templates
+    const slides = builder.state.currentIVA?.slides || [];
+    const nextSlideWithoutTemplate = slides.findIndex(
+      (slide, idx) => idx > slideIndex && !slide.templateId
+    );
+
+    if (nextSlideWithoutTemplate !== -1) {
+      // Move to next slide that needs a template
+      builder.setCurrentSlideIndex(nextSlideWithoutTemplate);
+      // Add a message to guide the user
+      chat.addSystemMessage(
+        `Great! Now let's choose a layout for Slide ${nextSlideWithoutTemplate + 1}.`
+      );
+    } else {
+      // All slides have templates, move to content population
+      builder.setCurrentSlideIndex(0);
+      builder.setConversationPhase('content_population');
+      chat.addSystemMessage(
+        `All slides have layouts. Now let's add content. Starting with Slide 1.`
+      );
+    }
   };
 
   // Handle content update in slide
@@ -195,6 +224,53 @@ export function IVABuilder() {
       builder.setSlide(slideIndex, updatedSlide);
     }
   };
+
+  // Handle export
+  const handleExport = async () => {
+    if (builder.state.currentIVA?.metadata && builder.state.currentIVA.slides) {
+      try {
+        // Save first
+        const ivaToExport = builder.state.currentIVA as IVA;
+        saveIVA({
+          ...ivaToExport,
+          metadata: { ...ivaToExport.metadata, status: 'submitted' },
+        });
+        storage.refreshData();
+
+        // Generate and download zip
+        const blob = await exportIVA(ivaToExport);
+        const filename = `${ivaToExport.metadata.name || 'iva'}-${Date.now()}.zip`;
+        downloadBlob(blob, filename);
+
+        chat.addSystemMessage(
+          `Your IVA "${ivaToExport.metadata.name}" has been exported and downloaded. It's also been saved to your recent IVAs.`
+        );
+      } catch (error) {
+        console.error('Export failed:', error);
+        chat.addSystemMessage('Sorry, there was an error exporting your IVA. Please try again.');
+      }
+    }
+  };
+
+  // Auto-save during build - save whenever currentIVA changes
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    // Skip first render and only save if we have a valid IVA with an ID
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (
+      builder.state.currentIVA?.metadata?.id &&
+      builder.state.appState !== 'LANDING' &&
+      builder.state.appState !== 'PREVIEW'
+    ) {
+      // Auto-save as draft
+      saveIVA(builder.state.currentIVA as IVA);
+      storage.refreshData();
+    }
+  }, [builder.state.currentIVA, builder.state.appState]);
 
   const isExpanded = builder.state.appState !== 'LANDING';
 

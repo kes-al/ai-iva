@@ -30,8 +30,17 @@ Conversation flow:
 1. If user wants to create a new IVA, ask about the brand first
 2. Then ask about target audience (what type of HCP)
 3. Then ask about slide structure (how many slides and what each covers)
-4. For each slide, help them select a layout and populate content
-5. At the end, offer to configure ISI and then export
+4. For each slide, help them select a layout
+5. Once all layouts are selected, help populate content for each slide
+6. When user is satisfied with content OR says they're done, transition to review phase
+7. In review phase, offer: preview, make changes, export, or go back
+
+IMPORTANT PHASE TRANSITIONS:
+- When in "content_population" phase and user says "done", "finished", "looks good", "that's all", "ready to export", etc., transition to "review" phase
+- In "review" phase, respond with: "Your IVA is ready! Would you like to preview it, make any changes, or export it?"
+- If user says "export" or "download" in review phase, use intent type "export_iva"
+- If user says "preview" in review phase, use intent type "preview_iva"
+- If user says "show my IVAs", "show archive", "my saved IVAs", use intent type "show_archive"
 
 Always respond with valid JSON in this exact format:
 {
@@ -50,12 +59,13 @@ Intent types and their fields:
 - select_layout: { "type": "select_layout", "slideIndex": number, "layoutId": "template_id" }
 - set_content: { "type": "set_content", "slideIndex": number, "field": "slot_id", "value": "content" }
 - show_archive: { "type": "show_archive" }
+- preview_iva: { "type": "preview_iva" }
 - export_iva: { "type": "export_iva" }
 - save_iva: { "type": "save_iva" }
 - go_back: { "type": "go_back" }
 - unknown: { "type": "unknown", "rawInput": "original message" }
 
-Conversation phases: initial, brand_selection, audience_selection, slide_structure, layout_selection, content_population, isi_configuration, review, editing
+Conversation phases: initial, brand_selection, audience_selection, slide_structure, layout_selection, content_population, review, editing
 
 Keep responses concise and professional. This is for pharma—be precise.
 When suggesting layouts, mention 2-3 that would work best for their content needs.
@@ -70,7 +80,7 @@ export async function POST(request: NextRequest) {
     const contextInfo = buildContextInfo(context);
 
     const response = await client.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-sonnet-4-20250514',
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [

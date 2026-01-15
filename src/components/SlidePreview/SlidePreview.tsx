@@ -20,6 +20,30 @@ export function SlidePreview({
   onContentUpdate,
   isEditable = false,
 }: SlidePreviewProps) {
+  // Handle slides without a template yet
+  if (!slide.templateId) {
+    return (
+      <div className="slide-container flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-16 h-16 text-gray-300 mb-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M4 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5ZM4 13a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6ZM16 13a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-6Z"
+          />
+        </svg>
+        <p className="text-gray-500 font-medium">Choose a layout</p>
+        <p className="text-gray-400 text-sm mt-1">Select a template from the chat panel</p>
+      </div>
+    );
+  }
+
   const template = getTemplateById(slide.templateId);
 
   if (!template) {

@@ -41,6 +41,12 @@ export function ExpandedView({
     );
   }
 
+  // Calculate if current slide needs a template
+  const slides = state.currentIVA?.slides || [];
+  const currentSlide = slides[state.currentSlideIndex];
+  const currentSlideNeedsTemplate = currentSlide ? !currentSlide.templateId : false;
+  const totalSlides = slides.length;
+
   return (
     <div className="h-full flex">
       {/* Chat Panel - 60% */}
@@ -51,6 +57,8 @@ export function ExpandedView({
           error={chat.error}
           conversationPhase={state.conversationPhase}
           currentSlideIndex={state.currentSlideIndex}
+          currentSlideNeedsTemplate={currentSlideNeedsTemplate}
+          totalSlides={totalSlides}
           onSendMessage={onChatMessage}
           onLayoutSelect={onLayoutSelect}
           onBack={onBack}

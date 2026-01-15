@@ -64,11 +64,11 @@ export function LandingView({
       {/* Recent and Favorites */}
       <div className="flex-1 overflow-y-auto space-y-6">
         {/* Recent IVAs */}
-        {recentIVAs.length > 0 && (
-          <div>
-            <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
-              Recent
-            </h2>
+        <div>
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+            Recent
+          </h2>
+          {recentIVAs.length > 0 ? (
             <div className="space-y-2">
               {recentIVAs.slice(0, 5).map((iva) => (
                 <IVAListItem
@@ -80,16 +80,20 @@ export function LandingView({
                 />
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <p className="text-sm text-gray-400 py-2">
+              No recent IVAs. Start by creating one above.
+            </p>
+          )}
+        </div>
 
         {/* Favorites */}
-        {favoriteIVAs.length > 0 && (
-          <div>
-            <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 flex items-center gap-1">
-              <span className="text-yellow-500">&#9733;</span>
-              Favorites
-            </h2>
+        <div>
+          <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3 flex items-center gap-1">
+            <span className="text-yellow-500">&#9733;</span>
+            Favorites
+          </h2>
+          {favoriteIVAs.length > 0 ? (
             <div className="space-y-2">
               {favoriteIVAs.map((iva) => (
                 <IVAListItem
@@ -102,18 +106,12 @@ export function LandingView({
                 />
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {recentIVAs.length === 0 && favoriteIVAs.length === 0 && (
-          <div className="text-center py-8 text-gray-400">
-            <p>No IVAs yet. Start by typing a message above!</p>
-            <p className="text-sm mt-2">
-              Try: &quot;Create a new IVA for Opdivo&quot;
+          ) : (
+            <p className="text-sm text-gray-400 py-2">
+              Star an IVA to add it to favorites.
             </p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

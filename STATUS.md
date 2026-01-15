@@ -28,7 +28,7 @@
 - [x] ChatInput component
 - [x] ChatMessage component
 - [x] /api/chat endpoint
-- [x] Haiku integration
+- [x] Claude Sonnet 4 integration
 
 ### Conversational Flow
 - [x] Brand selection
@@ -104,10 +104,9 @@
 
 ## Known Issues / Needs Refinement
 
-1. **Chat Response Parsing**: If AI returns non-JSON, fallback to raw text response
-2. **Image Handling**: Currently only supports URLs, not file uploads
-3. **ISI Content**: Placeholder content - needs real ISI text per brand
-4. **Export Download**: Download mechanism works but needs browser testing
+1. **Image Handling**: Currently only supports URLs, not file uploads
+2. **ISI Content**: Placeholder content - needs real ISI text per brand
+3. **Export Download**: Download mechanism works but needs browser testing
 
 ---
 
@@ -156,6 +155,43 @@
 
 ## Current Progress Notes
 
+### 2025-01-15 - Data Flow & Feature Fixes
+
+**Fixed:**
+- Build flow now completes through to export (review phase transition works)
+- Landing page displays Recent and Favorites sections (with empty states when no IVAs)
+- Edit mode loads existing IVAs with conversation history preserved
+- Archive accessible via chat command ("show me my IVAs")
+- Auto-save during build process - IVAs save to localStorage during creation
+- Export downloads valid Veeva-compatible zip packages
+- Preview mode accessible from review phase
+
+**Changes:**
+- `IVABuilder.tsx`: Added auto-save useEffect, handleExport function with download
+- `LandingView.tsx`: Always show Recent/Favorites sections with empty states
+- `api/chat/route.ts`: Enhanced system prompt for phase transitions (content_population → review)
+- `types.ts`: Made preview_iva ivaId optional for previewing current IVA
+
+**Verified working:**
+- Full build flow: prompt → brand → audience → slide count → layout selection → content → review → export
+- IVAs appear in Recent section after creation
+- Click IVA → Edit/Preview prompt → loads correctly
+- Archive mode shows all IVAs with filter tabs
+
+### 2025-01-15 - Per-Slide Template Selection & Model Upgrade
+
+**Completed:**
+- Fixed per-slide template selection (users can now choose different layouts for each slide)
+- Upgraded AI model from Claude Haiku to Claude Sonnet 4 (claude-sonnet-4-20250514)
+- Fixed JSON parsing issue for multi-line AI responses
+
+**Changes:**
+- `IVABuilder.tsx`: Creates placeholder slides with empty templateId, handles layout selection per slide
+- `SlidePreview.tsx`: Shows "Choose a layout" placeholder for slides without templates
+- `ChatPanel.tsx`: Conditionally shows layout selector based on current slide needs
+- `ExpandedView.tsx`: Calculates and passes currentSlideNeedsTemplate prop
+- `api/chat/route.ts`: Updated to Sonnet 4, added JSON newline escaping fix
+
 ### 2025-01-15 - Initial Build Complete
 
 **Completed:**
@@ -169,7 +205,7 @@
   - All 6 slide templates
   - Archive list with filtering
   - IVAPlayer for preview mode
-- Chat API with Claude Haiku integration
+- Chat API with Claude integration
 - Export system generating Veeva-compatible zip packages
 - localStorage persistence with userId placeholder for future migration
 - 39 unit tests passing
