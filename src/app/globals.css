@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bms-blue: #0033a0;
+  --bms-light-blue: #0072ce;
+  --bms-orange: #ff6600;
+  --bms-gray: #63666a;
+  --bms-light-gray: #d0d3d4;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 antialiased;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded hover:bg-gray-400;
+}
+
+/* Transition utilities */
+.transition-expand {
+  transition: width 300ms ease-in-out, height 300ms ease-in-out;
+}
+
+.transition-fade {
+  transition: opacity 300ms ease-out;
+}
+
+.transition-slide {
+  transition: transform 300ms ease-out, opacity 300ms ease-out;
+}
+
+/* Message animations */
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-message-in {
+  animation: messageSlideIn 200ms ease-out forwards;
+}
+
+/* Loading dots animation */
+@keyframes loadingDots {
+  0%, 20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  80%, 100% {
+    opacity: 0;
+  }
+}
+
+.loading-dot {
+  animation: loadingDots 1.4s infinite;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Slide template styles */
+.slide-container {
+  @apply relative bg-white rounded-lg shadow-md overflow-hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.slot-placeholder {
+  @apply border-2 border-dashed border-gray-300 rounded bg-gray-50
+         flex items-center justify-center text-gray-400 text-sm
+         hover:border-bms-lightBlue hover:bg-blue-50 transition-colors;
+}
+
+.slot-filled {
+  @apply border border-transparent;
+}
+
+/* ISI section styles */
+.isi-section {
+  @apply bg-gray-100 text-xs text-gray-600 p-3 overflow-y-auto;
+  max-height: 120px;
+}
+
+.isi-section.scrolling {
+  @apply overflow-y-auto;
+}
+
+.isi-section.expandable {
+  @apply cursor-pointer;
+}
+
+/* Layout card styles */
+.layout-card {
+  @apply border-2 border-gray-200 rounded-lg p-3 cursor-pointer
+         hover:border-bms-lightBlue hover:shadow-md transition-all;
+}
+
+.layout-card.selected {
+  @apply border-bms-blue bg-blue-50;
+}
+
+/* Thumbnail strip styles */
+.thumbnail {
+  @apply border-2 border-transparent rounded cursor-pointer
+         hover:border-bms-lightBlue transition-colors;
+}
+
+.thumbnail.active {
+  @apply border-bms-blue ring-2 ring-bms-lightBlue ring-offset-1;
+}
+
+/* Chat input styles */
+.chat-input {
+  @apply w-full px-4 py-3 pr-12 rounded-xl border border-gray-300
+         focus:outline-none focus:ring-2 focus:ring-bms-lightBlue focus:border-transparent
+         placeholder:text-gray-400 transition-all;
+}
+
+.chat-input:focus {
+  @apply shadow-md;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply bg-bms-blue text-white px-4 py-2 rounded-lg font-medium
+         hover:bg-bms-lightBlue active:scale-95 transition-all
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply bg-white text-bms-blue border border-bms-blue px-4 py-2 rounded-lg font-medium
+         hover:bg-blue-50 active:scale-95 transition-all
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* Archive item styles */
+.archive-item {
+  @apply bg-white rounded-lg p-4 border border-gray-200
+         hover:border-bms-lightBlue hover:shadow-md transition-all cursor-pointer;
+}
+
+.archive-item:hover .archive-actions {
+  @apply opacity-100;
+}
+
+.archive-actions {
+  @apply opacity-0 transition-opacity;
+}
+
+/* Filter tabs */
+.filter-tab {
+  @apply px-4 py-2 text-sm font-medium rounded-lg transition-colors;
+}
+
+.filter-tab.active {
+  @apply bg-bms-blue text-white;
+}
+
+.filter-tab:not(.active) {
+  @apply text-gray-600 hover:bg-gray-100;
+}
+
+/* Preview mode styles */
+.preview-slide {
+  @apply absolute inset-0 transition-opacity duration-300;
+}
+
+.preview-slide.active {
+  @apply opacity-100 z-10;
+}
+
+.preview-slide:not(.active) {
+  @apply opacity-0 z-0;
+}
+
+/* Fullscreen button */
+.fullscreen-btn {
+  @apply absolute top-4 right-4 bg-black/50 text-white p-2 rounded-lg
+         hover:bg-black/70 transition-colors;
+}

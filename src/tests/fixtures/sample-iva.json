@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "id": "sample-iva-001",
+    "name": "Opdivo MOA Deck",
+    "brand": "Opdivo",
+    "therapeuticArea": "Oncology",
+    "targetAudience": "Medical Oncologists",
+    "slideCount": 5,
+    "status": "draft",
+    "createdAt": "2025-01-15T10:00:00Z",
+    "updatedAt": "2025-01-15T12:30:00Z",
+    "isFavorite": true
+  },
+  "slides": [
+    {
+      "templateId": "title-slide",
+      "slots": {
+        "headline": "Opdivo (nivolumab)",
+        "subhead": "Mechanism of Action and Clinical Data"
+      }
+    },
+    {
+      "templateId": "content-image-split",
+      "slots": {
+        "headline": "How Opdivo Works",
+        "body": "Opdivo is a programmed death receptor-1 (PD-1) blocking antibody. By binding to PD-1 receptors on T cells, Opdivo blocks interaction with PD-L1 and PD-L2, releasing PD-1 pathway-mediated inhibition of the immune response, including the anti-tumor immune response.",
+        "image": null,
+        "isi": "IMPORTANT SAFETY INFORMATION: Severe and fatal immune-mediated adverse reactions can occur..."
+      }
+    },
+    {
+      "templateId": "data-chart-focus",
+      "slots": {
+        "headline": "Overall Survival Data",
+        "chart": null,
+        "caption": "Data from CheckMate trial. Results may vary.",
+        "isi": null
+      }
+    },
+    {
+      "templateId": "bullet-list",
+      "slots": {
+        "headline": "Key Clinical Benefits",
+        "bullets": "Improved overall survival in multiple tumor types\nDurable responses in subset of patients\nManageable safety profile with immune-related adverse events\nCombination therapy options available",
+        "image": null,
+        "isi": null
+      }
+    },
+    {
+      "templateId": "three-column",
+      "slots": {
+        "headline": "Treatment Considerations",
+        "column1-title": "Patient Selection",
+        "column1-body": "Consider PD-L1 expression status and prior treatments when selecting patients for Opdivo therapy.",
+        "column2-title": "Dosing",
+        "column2-body": "Refer to prescribing information for recommended dosing schedules by indication.",
+        "column3-title": "Monitoring",
+        "column3-body": "Regular monitoring for immune-related adverse reactions is recommended throughout treatment.",
+        "isi": "Please see full Prescribing Information and Medication Guide for Opdivo."
+      }
+    }
+  ]
+}
