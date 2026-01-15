@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     const contextInfo = buildContextInfo(context);
 
     const response = await client.messages.create({
-      model: 'claude-3-5-haiku-20241022',
+      model: 'claude-3-haiku-20240307',
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [
@@ -100,6 +100,13 @@ Respond with JSON only. No markdown code blocks.`,
       if (jsonStr.startsWith('```')) {
         jsonStr = jsonStr.replace(/```json?\n?/g, '').replace(/```$/g, '').trim();
       }
+
+      // Fix newlines inside JSON string values (common LLM issue)
+      // This regex finds strings and escapes newlines within them
+      jsonStr = jsonStr.replace(/"([^"\\]|\\.)*"/g, (match) => {
+        return match.replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+      });
+
       parsed = JSON.parse(jsonStr);
     } catch (parseError) {
       // If parsing fails, create a default response
